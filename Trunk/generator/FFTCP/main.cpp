@@ -6,7 +6,8 @@
 //
 // Linux: install libfftw3-dev
 //        gcc fft.c -o ./Release/fft-linux -march=native -O3 -std=gnu99 -lrt -lfftw3f -lm
-//
+// TDM-GCC: 
+//        g++ fft.c macros-sse.h -o tdmfft.exe -O3 -std=c++11 -march=native -DWIN32
 // Turn on AVX_ENABLE flag in macros-sse.h for avx support.
 //
 //
@@ -24,8 +25,14 @@
 
 
 
-#define INVERSE_FFT
+//#define INVERSE_FFT
 #define N 512
+
+
+
+
+
+
 #define PI 3.1415926535897932384626433832795028841971693993751058209  /* pi */
 
 #ifdef INVERSE_FFT

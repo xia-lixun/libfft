@@ -33,10 +33,12 @@
 #define __SSE_FLOAT_H__
 
 #include <immintrin.h>
-//#define AVX_ENABLE 1
+#define AVX_ENABLE 1
 
 
 
+
+#if(0)
 typedef struct plan {
 	
 	int direct;
@@ -49,7 +51,7 @@ typedef struct plan {
 	float ** wre_table;
 	float ** wim_table;
 } plan_t;
-
+#endif
 
 
 
