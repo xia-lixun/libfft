@@ -26,7 +26,7 @@
 
 
 //#define INVERSE_FFT
-#define N 512
+#define N 128
 
 
 
