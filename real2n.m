@@ -3,7 +3,7 @@
 % 2020-08-04
 close all; clear all; clc;
 
-x = [1, 2, 3, 4, 5, 6, 7, 8];   % some real-valued signal
+x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];   % some real-valued signal
 n = length(x);                  % must be even!
 n2 = n/2;                       % assume n is even
 z = x(1:2:n)+j*x(2:2:n);        % complex signal of length n/2

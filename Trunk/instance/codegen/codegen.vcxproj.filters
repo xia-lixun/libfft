@@ -23,5 +23,8 @@
     <ClInclude Include="..\macros-sse.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\libfft.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

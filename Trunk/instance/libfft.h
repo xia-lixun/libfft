@@ -18,6 +18,7 @@ extern "C" {
 #endif
 
 
+#define BUILD_DLL 1
 
 
 #ifdef BUILD_DLL
@@ -36,9 +37,15 @@ typedef struct plan {
 	float * x;  //input buffer, complex number interleaved format
 	float * y;  //output buffer, complex number interleaved format
 
+	float* ze;  //even part for real-optimized fft
+	float* zo;  //odd part for real-optimized fft
+
 				//n_4 counts from 8/4 to N/4, which is 2..N/4
 	float ** wre_table;
 	float ** wim_table;
+
+	float* wre_ropt;
+	float* wim_ropt;
 } plan_t;
 
 
@@ -51,6 +58,7 @@ typedef struct plan {
 
 LIBFFT_DLL void fft_init(plan_t * p, size_t n, int direct);
 LIBFFT_DLL void fft(plan_t * p);
+LIBFFT_DLL void ropt(plan_t* p);
 LIBFFT_DLL void fft_clean(plan_t * p);
 
 

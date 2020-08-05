@@ -197,16 +197,16 @@ int main(int argc, char * argv[])
 
 
 	size_t maxreidx, maximidx;
-	double err_max_re = 0.0f;
-	double err_max_im = 0.0f;
+	float err_max_re = 0.0f;
+	float err_max_im = 0.0f;
 	cast = (float *)fftOut;
 	for (int i = 0; i < 512; ++i) {
-		if (fabs(p.y[re(i)] - cast[re(i)]) / fabs(cast[re(i)]) > err_max_re) {
-			err_max_re = fabs(p.y[re(i)] - cast[re(i)]) / fabs(cast[re(i)]);
+		if (fabsf(p.y[re(i)] - cast[re(i)]) / fabsf(cast[re(i)]) > err_max_re) {
+			err_max_re = fabsf(p.y[re(i)] - cast[re(i)]) / fabsf(cast[re(i)]);
 			maxreidx = i;
 		}
-		if (fabs(p.y[im(i)] - cast[im(i)]) / fabs(cast[im(i)]) > err_max_im) {
-			err_max_im = fabs(p.y[im(i)] - cast[im(i)]) / fabs(cast[im(i)]);
+		if (fabsf(p.y[im(i)] - cast[im(i)]) / fabsf(cast[im(i)]) > err_max_im) {
+			err_max_im = fabsf(p.y[im(i)] - cast[im(i)]) / fabsf(cast[im(i)]);
 			maximidx = i;
 		}
 	}
