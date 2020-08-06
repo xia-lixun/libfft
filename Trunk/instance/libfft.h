@@ -56,9 +56,9 @@ typedef struct plan {
 
 
 
-LIBFFT_DLL void fft_init(plan_t * p, size_t n, int direct);
+LIBFFT_DLL plan_t * fft_init(size_t n, int direct);
 LIBFFT_DLL void fft(plan_t * p);
-LIBFFT_DLL void ropt(plan_t* p);
+LIBFFT_DLL void ropt(plan_t* p, float * output);
 LIBFFT_DLL void fft_clean(plan_t * p);
 
 
