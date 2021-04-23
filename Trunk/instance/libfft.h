@@ -18,14 +18,14 @@ extern "C" {
 #endif
 
 
-#define BUILD_DLL 1
+//#define BUILD_DLL 1
 
 
-#ifdef BUILD_DLL
-#define LIBFFT_DLL __declspec(dllexport)
-#else
-#define LIBFFT_DLL __declspec(dllimport)
-#endif
+//#ifdef BUILD_DLL
+//#define LIBFFT_DLL __declspec(dllexport)
+//#else
+//#define LIBFFT_DLL __declspec(dllimport)
+//#endif
 
 
 
@@ -56,10 +56,13 @@ typedef struct plan {
 
 
 
-LIBFFT_DLL plan_t * fft_init(size_t n, int direct);
-LIBFFT_DLL void fft(plan_t * p);
-LIBFFT_DLL void ropt(plan_t* p, float * output);
-LIBFFT_DLL void fft_clean(plan_t * p);
+//LIBFFT_DLL void fft_init(plan_t *p, size_t n, int direct);
+//LIBFFT_DLL void fft(plan_t * p);
+//LIBFFT_DLL void ropt(plan_t* p, float * output);
+//LIBFFT_DLL void fft_clean(plan_t * p);
+void fft_init(plan_t* p, size_t n, int direct);
+void fft(plan_t* p);
+void fft_clean(plan_t* p);
 
 
 #ifdef __cplusplus
