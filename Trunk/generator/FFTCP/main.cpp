@@ -25,8 +25,8 @@
 
 
 
-//#define INVERSE_FFT
-#define N 512
+#define INVERSE_FFT
+#define N 8192
 
 
 

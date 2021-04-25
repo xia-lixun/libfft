@@ -13,7 +13,7 @@
 #endif
 
 
-#include "libfft.h"
+
 
 
 void fft_init(plan_t * p, size_t n, int direct)
@@ -258,8 +258,6 @@ struct timespec t0, t1;
 
 int main(int argc, char * argv[])
 {
-    printf("porcess starts...\n");
-
 	plan_t p;
 	fft_init(&p, 512, -1);
 
@@ -275,26 +273,31 @@ int main(int argc, char * argv[])
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	fftwf_complex * fftIn = (fftwf_complex*)fftwf_malloc(sizeof(fftwf_complex) * 512);
     fftwf_complex * fftOut = (fftwf_complex*)fftwf_malloc(sizeof(fftwf_complex) * 512);
+
     float * cast = (float *)fftIn;
 	for (size_t i = 0; i < 512; ++i) {
 	    cast[re(i)] = p.x[re(i)];
 	    cast[im(i)] = p.x[im(i)];
     }
+
     fftwf_plan plan = fftwf_plan_dft_1d(512, fftIn, fftOut, FFTW_FORWARD, FFTW_ESTIMATE);
-
-
-
-    fftw_complex* fftInd = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * 512);
-    fftw_complex* fftOutd = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * 512);
-    double* castd = (double*)fftInd;
-    for (size_t i = 0; i < 512; ++i) {
-        castd[re(i)] = (double)(p.x[re(i)]);
-        castd[im(i)] = (double)(p.x[im(i)]);
-    }
-    fftw_plan pland = fftw_plan_dft_1d(512, fftInd, fftOutd, FFTW_FORWARD, FFTW_ESTIMATE);
-    fftw_execute(pland);
 
 
 #ifdef WIN32
@@ -330,6 +333,22 @@ int main(int argc, char * argv[])
 	printf("fftw : %ld s, %ld ns\n", temp.tv_sec, temp.tv_nsec);}
 #endif
     fftwf_destroy_plan(plan);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -371,71 +390,36 @@ int main(int argc, char * argv[])
 
 
 
-    {
-        size_t maxreidx, maximidx;
-        double err_max_re = 0.0;
-        double err_max_im = 0.0;
-        double err_rms = 0.0;
 
-        double delta_re;
-        double delta_im;
 
-        castd = (double*)fftOutd;
-        for (int i = 0; i < 512; ++i) {
-            if (fabs(p.y[re(i)] - castd[re(i)]) / fabs(castd[re(i)]) > err_max_re) {
-                err_max_re = fabs(p.y[re(i)] - castd[re(i)]) / fabs(castd[re(i)]);
-                maxreidx = i;
-            }
-            if (fabs(p.y[im(i)] - castd[im(i)]) / fabs(castd[im(i)]) > err_max_im) {
-                err_max_im = fabs(p.y[im(i)] - castd[im(i)]) / fabs(castd[im(i)]);
-                maximidx = i;
-            }
 
-            delta_re = p.y[re(i)] - castd[re(i)];
-            delta_im = p.y[im(i)] - castd[im(i)];
-            err_rms += delta_re * delta_re + delta_im * delta_im;
-        }
-        printf("=======[MY FFT]=======\n");
-        printf("error rms = %1.16f\n", sqrt(err_rms / 512.0));
-        printf("max error (real, imag) : (%3.16f, %3.16f)\n", err_max_re, err_max_im);
-        printf("fft - fftw, real: (%3.16f, %3.16f * I) (%3.16f, %3.16f * I)\n", p.y[re(maxreidx)], p.y[im(maxreidx)], castd[re(maxreidx)], castd[im(maxreidx)]);
-        printf("fft - fftw, imag: (%3.16f, %3.16f * I) (%3.16f, %3.16f * I)\n", p.y[re(maximidx)], p.y[im(maximidx)], castd[re(maximidx)], castd[im(maximidx)]);
+
+
+
+
+
+
+
+
+
+
+
+
+    size_t maxreidx, maximidx;
+    double err_max_re = 0.0f;
+    double err_max_im = 0.0f;
+	cast = (float *)fftOut;
+	for (int i = 0; i < 512; ++i) {
+	    if ( fabs(p.y[re(i)] - cast[re(i)]) / fabs(cast[re(i)]) > err_max_re ) {
+            err_max_re = fabs(p.y[re(i)] - cast[re(i)]) / fabs(cast[re(i)]);
+            maxreidx = i; }
+        if ( fabs(p.y[im(i)] - cast[im(i)]) / fabs(cast[im(i)]) > err_max_im ) {
+            err_max_im = fabs(p.y[im(i)] - cast[im(i)]) / fabs(cast[im(i)]);
+            maximidx = i; }
     }
-
-
-    {
-        size_t maxreidx, maximidx;
-        double err_max_re = 0.0;
-        double err_max_im = 0.0;
-        double err_rms = 0.0;
-
-        double delta_re;
-        double delta_im;
-
-        castd = (double*)fftOutd;
-        cast = (float*)fftOut;
-        for (int i = 0; i < 512; ++i) {
-            if (fabs(cast[re(i)] - castd[re(i)]) / fabs(castd[re(i)]) > err_max_re) {
-                err_max_re = fabs(cast[re(i)] - castd[re(i)]) / fabs(castd[re(i)]);
-                maxreidx = i;
-            }
-            if (fabs(cast[im(i)] - castd[im(i)]) / fabs(castd[im(i)]) > err_max_im) {
-                err_max_im = fabs(cast[im(i)] - castd[im(i)]) / fabs(castd[im(i)]);
-                maximidx = i;
-            }
-
-            delta_re = cast[re(i)] - castd[re(i)];
-            delta_im = cast[im(i)] - castd[im(i)];
-            err_rms += delta_re * delta_re + delta_im * delta_im;
-        }
-        printf("=======[FFTW]========\n");
-        printf("error rms = %1.16f\n", sqrt(err_rms / 512.0));
-        printf("max error (real, imag) : (%3.16f, %3.16f)\n", err_max_re, err_max_im);
-        printf("fftwf - fftw, real: (%3.16f, %3.16f * I) (%3.16f, %3.16f * I)\n", cast[re(maxreidx)], cast[im(maxreidx)], castd[re(maxreidx)], castd[im(maxreidx)]);
-        printf("fftwf - fftw, imag: (%3.16f, %3.16f * I) (%3.16f, %3.16f * I)\n", cast[re(maximidx)], cast[im(maximidx)], castd[re(maximidx)], castd[im(maximidx)]);
-    }
-
-
+    printf("max error (real, imag) : (%3.16f, %3.16f)\n", err_max_re, err_max_im);
+    printf("real fft vs fftw: (%3.16f, %3.16f * I) (%3.16f, %3.16f * I)\n", p.y[re(maxreidx)], p.y[im(maxreidx)], cast[re(maxreidx)], cast[im(maxreidx)]);
+    printf("imag fft vs fftw: (%3.16f, %3.16f * I) (%3.16f, %3.16f * I)\n", p.y[re(maximidx)], p.y[im(maximidx)], cast[re(maximidx)], cast[im(maximidx)]);
     return 0;
 }
 
