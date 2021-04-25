@@ -1,6 +1,4 @@
 #pragma once
-
-
 /// Build windows x86 dll from TDM-GCC
 ///       TDM-GCC build x64 exe/dll by default!
 ///

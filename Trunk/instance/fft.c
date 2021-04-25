@@ -366,7 +366,6 @@ int main(int argc, char * argv[])
 	printf("fft : %ld s, %ld ns\n", temp.tv_sec, temp.tv_nsec);}
 #endif
 
-    fft_clean(&p);
 
 
 
@@ -435,6 +434,7 @@ int main(int argc, char * argv[])
         printf("fftwf - fftw, imag: (%3.16f, %3.16f * I) (%3.16f, %3.16f * I)\n", cast[re(maximidx)], cast[im(maximidx)], castd[re(maximidx)], castd[im(maximidx)]);
     }
 
+    fft_clean(&p);
 
     return 0;
 }

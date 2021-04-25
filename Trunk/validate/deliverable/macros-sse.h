@@ -60,7 +60,6 @@ typedef struct plan {
 #define im(x) ((x)*2+1)
 
 
-
 #define VADD_ _mm256_add_ps
 #define VSUB_ _mm256_sub_ps
 #define VMUL_ _mm256_mul_ps
