@@ -3,11 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <immintrin.h>
-#ifdef WIN32
 #include <Windows.h>
-#else
 #include <malloc.h>
-#endif
+
 #include "fft.h"
 #include "macros-sse.h"
 
@@ -97,13 +95,13 @@ void fft_init(plan_t * p, size_t n, int direct)
     free(W_REAL);
     free(W_IMAG);
 
-#ifdef WIN32
-	p->x = (float *)_mm_malloc(n * 2 * sizeof(float), 32);
-	p->y = (float *)_mm_malloc(n * 2 * sizeof(float), 32);
-#else
-	p->x = (float *)memalign(32, n * 2 * sizeof(float));
-	p->y = (float *)memalign(32, n * 2 * sizeof(float));
-#endif
+//#ifdef WIN32
+//	p->x = (float *)_mm_malloc(n * 2 * sizeof(float), 32);
+//	p->y = (float *)_mm_malloc(n * 2 * sizeof(float), 32);
+//#else
+//	p->x = (float *)memalign(32, n * 2 * sizeof(float));
+//	p->y = (float *)memalign(32, n * 2 * sizeof(float));
+//#endif
 
 	_MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);
     _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
@@ -128,13 +126,13 @@ void fft_clean(plan_t * p)
    free(p->wre_table);
    free(p->wim_table);
 
-#ifdef WIN32
-	_mm_free(p->x);
-	_mm_free(p->y);
-#else
-	free(p->x);
-	free(p->y);
-#endif
+//#ifdef WIN32
+//	_mm_free(p->x);
+//	_mm_free(p->y);
+//#else
+//	free(p->x);
+//	free(p->y);
+//#endif
 }
 
 
@@ -7066,8 +7064,11 @@ ifft_n_(2048, p->y + re(0), p->y + re(2048), p->y + re(4096), p->y + re(6144), p
 }
 
 
-void fft_exec(plan_t* p)
+void fft_exec(plan_t* p, float* in, float* out)
 {
+    p->x = in;
+    p->y = out;
+
     switch (p->n) {
         case 16:
             (p->direct > 0) ? (dft_1d_16_inv(p)) : (dft_1d_16(p));

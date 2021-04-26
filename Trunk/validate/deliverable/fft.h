@@ -35,7 +35,7 @@ typedef struct plan {
 
 
 void fft_init(plan_t* p, size_t n, int direct);
-void fft_exec(plan_t* p);
+void fft_exec(plan_t* p, float* in, float* out);
 void fft_clean(plan_t* p);
 
 

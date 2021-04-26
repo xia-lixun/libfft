@@ -4,11 +4,8 @@
 #include <stdlib.h>
 #include <immintrin.h>
 #include "../instance/fftw3.h"
-#ifdef WIN32
 #include <Windows.h>
-#else
 #include <malloc.h>
-#endif
 #include "deliverable/fft.h"
 #include "deliverable/macros-sse.h"
 
@@ -38,22 +35,26 @@ int main(int argc, char * argv[])
 
     for (int nfft = 16; nfft < 16384; nfft = nfft * 2) {
 
+
+        float* fft_in = (float *)_mm_malloc(nfft * 2 * sizeof(float), 32);
+        float* fft_out = (float *)_mm_malloc(nfft * 2 * sizeof(float), 32);
+
         plan_t p;
         fft_init(&p, nfft, 1);
 
         //prepare test input vector
         srand((unsigned int)time(0));
         for (size_t i = 0; i < nfft; i++) {
-            p.x[re(i)] = (float)((double)rand() / (double)RAND_MAX);
-            p.x[im(i)] = (float)((double)rand() / (double)RAND_MAX);
+            fft_in[re(i)] = (float)((double)rand() / (double)RAND_MAX);
+            fft_in[im(i)] = (float)((double)rand() / (double)RAND_MAX);
         }
 
         fftwf_complex* fftIn = (fftwf_complex*)fftwf_malloc(sizeof(fftwf_complex) * nfft);
         fftwf_complex* fftOut = (fftwf_complex*)fftwf_malloc(sizeof(fftwf_complex) * nfft);
         float* cast = (float*)fftIn;
         for (size_t i = 0; i < nfft; ++i) {
-            cast[re(i)] = p.x[re(i)];
-            cast[im(i)] = p.x[im(i)];
+            cast[re(i)] = fft_in[re(i)];
+            cast[im(i)] = fft_in[im(i)];
         }
         fftwf_plan plan = fftwf_plan_dft_1d(nfft, fftIn, fftOut, FFTW_BACKWARD, FFTW_ESTIMATE);
 
@@ -62,8 +63,8 @@ int main(int argc, char * argv[])
         fftw_complex* fftOutd = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * nfft);
         double* castd = (double*)fftInd;
         for (size_t i = 0; i < nfft; ++i) {
-            castd[re(i)] = (double)(p.x[re(i)]);
-            castd[im(i)] = (double)(p.x[im(i)]);
+            castd[re(i)] = (double)(fft_in[re(i)]);
+            castd[im(i)] = (double)(fft_in[im(i)]);
         }
         fftw_plan pland = fftw_plan_dft_1d(nfft, fftInd, fftOutd, FFTW_BACKWARD, FFTW_ESTIMATE);
         fftw_execute(pland);
@@ -106,7 +107,7 @@ int main(int argc, char * argv[])
         clock_gettime(CLOCK_MONOTONIC, &t0);
 #endif
         for (int i = 0; i < 10000; ++i) {
-            fft_exec(&p);
+            fft_exec(&p, fft_in, fft_out);
         }
 #ifdef WIN32
         QueryPerformanceCounter(&EndingTime);
@@ -140,17 +141,17 @@ int main(int argc, char * argv[])
 
             castd = (double*)fftOutd;
             for (int i = 0; i < nfft; ++i) {
-                if (fabs(p.y[re(i)] - castd[re(i)]) / fabs(castd[re(i)]) > err_max_re) {
-                    err_max_re = fabs(p.y[re(i)] - castd[re(i)]) / fabs(castd[re(i)]);
+                if (fabs(fft_out[re(i)] - castd[re(i)]) / fabs(castd[re(i)]) > err_max_re) {
+                    err_max_re = fabs(fft_out[re(i)] - castd[re(i)]) / fabs(castd[re(i)]);
                     maxreidx = i;
                 }
-                if (fabs(p.y[im(i)] - castd[im(i)]) / fabs(castd[im(i)]) > err_max_im) {
-                    err_max_im = fabs(p.y[im(i)] - castd[im(i)]) / fabs(castd[im(i)]);
+                if (fabs(fft_out[im(i)] - castd[im(i)]) / fabs(castd[im(i)]) > err_max_im) {
+                    err_max_im = fabs(fft_out[im(i)] - castd[im(i)]) / fabs(castd[im(i)]);
                     maximidx = i;
                 }
 
-                delta_re = p.y[re(i)] - castd[re(i)];
-                delta_im = p.y[im(i)] - castd[im(i)];
+                delta_re = fft_out[re(i)] - castd[re(i)];
+                delta_im = fft_out[im(i)] - castd[im(i)];
                 err_rms += delta_re * delta_re + delta_im * delta_im;
             }
             printf("=======[FFT]=======\n");
@@ -204,6 +205,8 @@ int main(int argc, char * argv[])
         fftw_free(fftOutd);
 
         fft_clean(&p);
+        _mm_free(fft_in);
+        _mm_free(fft_out);
     }
 
 
